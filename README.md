@@ -16,7 +16,9 @@ Find and replace all on all files (CMD+SHIFT+F):
 
 A Nuxt module for easily interacting with Cosmos blockchains using CosmJS.
 
-- [✨ &nbsp;Release Notes](/CHANGELOG.md)
+- [✨ &nbsp;Quickstart](/QUICKSTART.md)
+- [👀​ &nbsp;Examples](/EXAMPLES.md)
+
 <!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/nuxt-cosmos?file=playground%2Fapp.vue) -->
 <!-- - [📖 &nbsp;Documentation](https://example.com) -->
 
@@ -35,7 +37,7 @@ A Nuxt module for easily interacting with Cosmos blockchains using CosmJS.
 Install the module to your Nuxt application with one command:
 
 ```bash
-npx nuxi module add nuxt-cosmos
+npx nuxi module add @cosmdev/nuxt-cosmos
 ```
 
 That's it! You can now use Nuxt Cosmos Module in your Nuxt app ✨

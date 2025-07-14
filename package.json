@@ -1,6 +1,6 @@
 {
   "name": "@cosmdev/nuxt-cosmos",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Nuxt module for easily interacting with Cosmos blockchains using CosmJS",
   "repository": "https://github.com/cosmDev/nuxt-cosmos",
   "license": "MIT",
@@ -34,8 +34,6 @@
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
-    "@cosmjs/proto-signing": "^0.34.0",
-    "@cosmjs/stargate": "^0.34.0",
     "@nuxt/kit": "^3.17.6"
   },
   "devDependencies": {
@@ -45,6 +43,8 @@
     "@nuxt/schema": "^3.17.6",
     "@nuxt/test-utils": "^3.19.2",
     "@types/node": "latest",
+    "@cosmjs/proto-signing": "^0.34.0",
+    "@cosmjs/stargate": "^0.34.0",
     "changelogen": "^0.6.2",
     "eslint": "^9.30.1",
     "nuxt": "^3.17.6",
