@@ -32,9 +32,9 @@ jobs:
   publish:
     permissions:
       contents: write
-      needs: test
-      runs-on: ubuntu-latest
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
