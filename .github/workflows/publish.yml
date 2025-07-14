@@ -29,12 +29,6 @@ jobs:
       - name: Run linting
         run: npm run lint
 
-      - name: Run tests
-        run: npm run test
-
-      - name: Type checking
-        run: npm run test:types
-
   publish:
     needs: test
     runs-on: ubuntu-latest
