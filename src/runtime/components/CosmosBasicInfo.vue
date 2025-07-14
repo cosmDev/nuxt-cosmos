@@ -12,42 +12,54 @@
         >
         <button
           v-if="!isConnected"
-          @click="handleConnect"
           :disabled="isLoading || !rpcEndpoint"
           class="connect-btn"
+          @click="handleConnect"
         >
           {{ isLoading ? 'Connecting...' : 'Connect' }}
         </button>
         <button
           v-else
-          @click="handleDisconnect"
           class="disconnect-btn"
+          @click="handleDisconnect"
         >
           Disconnect
         </button>
       </div>
-      
-      <div v-if="error" class="error-message">
+
+      <div
+        v-if="error"
+        class="error-message"
+      >
         ❌ {{ error }}
       </div>
-      
-      <div v-if="isConnected" class="success-message">
+
+      <div
+        v-if="isConnected"
+        class="success-message"
+      >
         ✅ Successfully connected!
       </div>
     </div>
 
-    <div v-if="isConnected" class="info-section">
+    <div
+      v-if="isConnected"
+      class="info-section"
+    >
       <div class="actions">
         <button
-          @click="refreshInfo"
           :disabled="loadingInfo"
           class="refresh-btn"
+          @click="refreshInfo"
         >
           {{ loadingInfo ? 'Refreshing...' : '🔄 Refresh' }}
         </button>
       </div>
 
-      <div v-if="blockchainInfo" class="info-grid">
+      <div
+        v-if="blockchainInfo"
+        class="info-grid"
+      >
         <div class="info-card">
           <h4>📊 Blockchain Information</h4>
           <div class="info-item">
@@ -56,7 +68,7 @@
           </div>
           <div class="info-item">
             <label>📏 Current height:</label>
-            <span class="value">{{ blockchainInfo.latestBlockHeight.toLocaleString() }}</span>
+            <span class="value">{{ (blockchainInfo.latestBlockHeight as number)?.toLocaleString() || 'N/A' }}</span>
           </div>
           <div class="info-item">
             <label>🔒 Latest block hash:</label>
@@ -64,13 +76,16 @@
           </div>
           <div class="info-item">
             <label>⏰ Timestamp:</label>
-            <span class="value">{{ formatDate(blockchainInfo.latestBlockTime) }}</span>
+            <span class="value">{{ formatDate(blockchainInfo.latestBlockTime as string) }}</span>
           </div>
         </div>
       </div>
 
-      <div v-if="loadingInfo" class="loading">
-        <div class="spinner"></div>
+      <div
+        v-if="loadingInfo"
+        class="loading"
+      >
+        <div class="spinner" />
         <p>Retrieving data...</p>
       </div>
     </div>
@@ -80,6 +95,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useCosmosBasic } from '../composables/useCosmosBasic'
+import type { BasicBlockchainInfo } from '../composables/useCosmosBasic'
 
 interface Props {
   defaultEndpoint?: string
@@ -88,7 +104,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   defaultEndpoint: 'https://cosmos-api.cosmdev.com/rpc/atom',
-  autoConnect: false
+  autoConnect: false,
 })
 
 const {
@@ -97,17 +113,17 @@ const {
   error,
   connect,
   disconnect,
-  getBasicInfo
+  getBasicInfo,
 } = useCosmosBasic()
 
 const rpcEndpoint = ref(props.defaultEndpoint)
-const blockchainInfo = ref<any>(null)
+const blockchainInfo = ref<BasicBlockchainInfo | null>(null)
 const loadingInfo = ref(false)
 
 const handleConnect = async () => {
   console.log('Attempting connection to:', rpcEndpoint.value)
   await connect(rpcEndpoint.value)
-  
+
   if (isConnected.value) {
     console.log('Connection successful, retrieving info...')
     await refreshInfo()
@@ -124,15 +140,17 @@ const refreshInfo = async () => {
     console.log('Not connected, cannot retrieve info')
     return
   }
-  
+
   try {
     loadingInfo.value = true
     console.log('Starting information retrieval...')
     blockchainInfo.value = await getBasicInfo()
     console.log('Information retrieved:', blockchainInfo.value)
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error during refresh:', err)
-  } finally {
+  }
+  finally {
     loadingInfo.value = false
   }
 }
@@ -145,9 +163,10 @@ const formatDate = (dateString: string) => {
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
     })
-  } catch {
+  }
+  catch {
     return dateString
   }
 }
@@ -375,7 +394,7 @@ onMounted(() => {
   .input-group {
     flex-direction: column;
   }
-  
+
   .rpc-input {
     min-width: auto;
     width: 100%;

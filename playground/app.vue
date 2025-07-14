@@ -2,9 +2,9 @@
   <div>
     <h1>Nuxt Cosmos Module - Playground</h1>
     <p>Testing Cosmos module with CosmJS</p>
-    
+
     <!-- Simplified and more stable component -->
-    <CosmosBasicInfo 
+    <CosmosBasicInfo
       :default-endpoint="'https://cosmos-api.cosmdev.com/rpc/atom'"
       :auto-connect="false"
     />
@@ -17,7 +17,7 @@
         🔧 Advanced component (with node information)
       </summary>
       <div style="margin-top: 20px;">
-        <CosmosBlockchainInfo 
+        <CosmosBlockchainInfo
           :default-endpoint="'https://cosmos-api.cosmdev.com/rpc/atom'"
           :auto-connect="false"
         />
@@ -27,10 +27,16 @@
     <!-- Example of direct use of basic composable -->
     <div class="custom-example">
       <h2>Direct test of basic composable</h2>
-      <button @click="testBasicComposable" :disabled="loading">
+      <button
+        :disabled="loading"
+        @click="testBasicComposable"
+      >
         {{ loading ? 'Test in progress...' : 'Test useCosmosBasic' }}
       </button>
-      <div v-if="basicInfo" class="result">
+      <div
+        v-if="basicInfo"
+        class="result"
+      >
         <h3>Result:</h3>
         <pre>{{ JSON.stringify(basicInfo, null, 2) }}</pre>
       </div>
@@ -52,9 +58,11 @@ const testBasicComposable = async () => {
     basicInfo.value = await getBasicInfo()
     disconnect()
     console.log('Test completed successfully!')
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

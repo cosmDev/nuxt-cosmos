@@ -18,16 +18,18 @@ export const useCosmosBasic = () => {
     try {
       isLoading.value = true
       error.value = null
-      
+
       console.log('Connecting to:', endpoint)
       client.value = await StargateClient.connect(endpoint)
       isConnected.value = true
       console.log('Successfully connected!')
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : 'Connection error'
       console.error('Error during connection:', err)
       isConnected.value = false
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -48,13 +50,13 @@ export const useCosmosBasic = () => {
 
     try {
       console.log('Retrieving basic information...')
-      
+
       const chainId = await client.value.getChainId()
       console.log('Chain ID:', chainId)
-      
+
       const height = await client.value.getHeight()
       console.log('Height:', height)
-      
+
       const block = await client.value.getBlock()
       console.log('Block retrieved:', block.header.height)
 
@@ -62,9 +64,10 @@ export const useCosmosBasic = () => {
         chainId,
         latestBlockHeight: height,
         latestBlockTime: block.header.time,
-        latestBlockHash: block.id
+        latestBlockHash: block.id,
       }
-    } catch (err) {
+    }
+    catch (err) {
       const message = err instanceof Error ? err.message : 'Error retrieving information'
       error.value = message
       console.error('getBasicInfo error:', err)
@@ -79,11 +82,12 @@ export const useCosmosBasic = () => {
       const chainId = await testClient.getChainId()
       testClient.disconnect()
       return { success: true, chainId }
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Connection test failed:', err)
-      return { 
-        success: false, 
-        error: err instanceof Error ? err.message : 'Test error'
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Test error',
       }
     }
   }
@@ -96,6 +100,6 @@ export const useCosmosBasic = () => {
     connect,
     disconnect,
     getBasicInfo,
-    testConnection
+    testConnection,
   }
 }

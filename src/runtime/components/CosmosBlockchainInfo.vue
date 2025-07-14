@@ -12,37 +12,46 @@
         >
         <button
           v-if="!isConnected"
-          @click="handleConnect"
           :disabled="isLoading || !rpcEndpoint"
           class="connect-btn"
+          @click="handleConnect"
         >
           {{ isLoading ? 'Connecting...' : 'Connect' }}
         </button>
         <button
           v-else
-          @click="handleDisconnect"
           class="disconnect-btn"
+          @click="handleDisconnect"
         >
           Disconnect
         </button>
       </div>
-      <div v-if="error" class="error-message">
+      <div
+        v-if="error"
+        class="error-message"
+      >
         {{ error }}
       </div>
     </div>
 
-    <div v-if="isConnected" class="blockchain-data">
+    <div
+      v-if="isConnected"
+      class="blockchain-data"
+    >
       <div class="actions-section">
         <button
-          @click="refreshInfo"
           :disabled="loadingInfo"
           class="refresh-btn"
+          @click="refreshInfo"
         >
           {{ loadingInfo ? 'Refreshing...' : 'Refresh info' }}
         </button>
       </div>
 
-      <div v-if="blockchainInfo" class="info-grid">
+      <div
+        v-if="blockchainInfo"
+        class="info-grid"
+      >
         <div class="info-card">
           <h4>Blockchain Information</h4>
           <div class="info-item">
@@ -63,7 +72,10 @@
           </div>
         </div>
 
-        <div v-if="blockchainInfo.nodeInfo" class="info-card">
+        <div
+          v-if="blockchainInfo.nodeInfo"
+          class="info-card"
+        >
           <h4>Node Information</h4>
           <div class="info-item">
             <label>Version:</label>
@@ -91,14 +103,17 @@
               class="block-input"
             >
             <button
-              @click="fetchBlock"
               :disabled="loadingBlock"
               class="fetch-btn"
+              @click="fetchBlock"
             >
               {{ loadingBlock ? 'Loading...' : 'Fetch' }}
             </button>
           </div>
-          <div v-if="selectedBlock" class="block-info">
+          <div
+            v-if="selectedBlock"
+            class="block-info"
+          >
             <h5>Block {{ selectedBlock.header.height }}</h5>
             <div class="info-item">
               <label>Hash:</label>
@@ -131,24 +146,34 @@
               class="denom-input"
             >
             <button
-              @click="checkBalance"
               :disabled="loadingBalance || !walletAddress"
               class="fetch-btn"
+              @click="checkBalance"
             >
               {{ loadingBalance ? 'Loading...' : 'Check' }}
             </button>
           </div>
-          <div v-if="balance" class="balance-info">
+          <div
+            v-if="balance"
+            class="balance-info"
+          >
             <h5>Balance</h5>
             <div v-if="Array.isArray(balance)">
-              <div v-for="coin in balance" :key="coin.denom" class="info-item">
+              <div
+                v-for="coin in balance"
+                :key="coin.denom"
+                class="info-item"
+              >
                 <label>{{ coin.denom }}:</label>
                 <span class="value">{{ coin.amount }}</span>
               </div>
             </div>
-            <div v-else class="info-item">
-              <label>{{ balance.denom }}:</label>
-              <span class="value">{{ balance.amount }}</span>
+            <div
+              v-else-if="balance && !Array.isArray(balance)"
+              class="info-item"
+            >
+              <label>{{ (balance as any).denom }}:</label>
+              <span class="value">{{ (balance as any).amount }}</span>
             </div>
           </div>
         </div>
@@ -160,7 +185,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useCosmosClient } from '../composables/useCosmosClient'
-import type { Block } from '@cosmjs/stargate'
+import type { CosmosBlockchainInfo } from '../composables/useCosmosClient'
+import type { Block, Coin } from '@cosmjs/stargate'
 
 interface Props {
   defaultEndpoint?: string
@@ -169,7 +195,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   defaultEndpoint: 'https://cosmos-api.cosmdev.com/rpc/atom',
-  autoConnect: false
+  autoConnect: false,
 })
 
 const {
@@ -180,11 +206,11 @@ const {
   disconnect,
   getBlockchainInfo,
   getBlock,
-  getBalance
+  getBalance,
 } = useCosmosClient()
 
 const rpcEndpoint = ref(props.defaultEndpoint)
-const blockchainInfo = ref<any>(null)
+const blockchainInfo = ref<CosmosBlockchainInfo | null>(null)
 const loadingInfo = ref(false)
 
 // Block search
@@ -195,7 +221,7 @@ const loadingBlock = ref(false)
 // Balance check
 const walletAddress = ref('')
 const denom = ref('')
-const balance = ref<any>(null)
+const balance = ref<Coin | readonly Coin[] | null>(null)
 const loadingBalance = ref(false)
 
 const handleConnect = async () => {
@@ -214,39 +240,45 @@ const handleDisconnect = () => {
 
 const refreshInfo = async () => {
   if (!isConnected.value) return
-  
+
   try {
     loadingInfo.value = true
     blockchainInfo.value = await getBlockchainInfo()
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error during refresh:', err)
-  } finally {
+  }
+  finally {
     loadingInfo.value = false
   }
 }
 
 const fetchBlock = async () => {
   if (!isConnected.value) return
-  
+
   try {
     loadingBlock.value = true
     selectedBlock.value = await getBlock(blockHeight.value)
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error fetching block:', err)
-  } finally {
+  }
+  finally {
     loadingBlock.value = false
   }
 }
 
 const checkBalance = async () => {
   if (!isConnected.value || !walletAddress.value) return
-  
+
   try {
     loadingBalance.value = true
     balance.value = await getBalance(walletAddress.value, denom.value || undefined)
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error checking balance:', err)
-  } finally {
+  }
+  finally {
     loadingBalance.value = false
   }
 }
@@ -454,19 +486,19 @@ onMounted(() => {
   .input-group {
     flex-direction: column;
   }
-  
+
   .rpc-input {
     min-width: auto;
   }
-  
+
   .info-grid, .tools-section {
     grid-template-columns: 1fr;
   }
-  
+
   .tool-card .input-group {
     flex-direction: column;
   }
-  
+
   .address-input, .block-input, .denom-input {
     width: 100%;
   }

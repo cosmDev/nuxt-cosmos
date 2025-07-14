@@ -1,6 +1,5 @@
 import { ref, computed } from 'vue'
-import { StargateClient } from '@cosmjs/stargate'
-import type { IndexedTx } from '@cosmjs/stargate'
+import type { StargateClient, IndexedTx } from '@cosmjs/stargate'
 
 export interface TransactionQuery {
   hash?: string
@@ -9,6 +8,16 @@ export interface TransactionQuery {
   height?: number
   minHeight?: number
   maxHeight?: number
+}
+
+export interface TransactionMessage {
+  type: string
+  content: Array<{ key: string, value: string }>
+}
+
+export interface TransactionFee {
+  amount: string
+  denom: string
 }
 
 export const useCosmosTransactions = () => {
@@ -48,7 +57,8 @@ export const useCosmosTransactions = () => {
 
       if (query.height) {
         queryParts.push(`tx.height=${query.height}`)
-      } else {
+      }
+      else {
         if (query.minHeight) {
           queryParts.push(`tx.height>=${query.minHeight}`)
         }
@@ -66,16 +76,17 @@ export const useCosmosTransactions = () => {
       const results = await client.value.searchTx(searchQuery)
       transactions.value = results
       return results
-
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : 'Error during search'
       throw err
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
 
-  const getTransactionsByAddress = async (address: string, limit = 50): Promise<IndexedTx[]> => {
+  const getTransactionsByAddress = async (address: string, _limit = 50): Promise<IndexedTx[]> => {
     return await searchTransactions({ sender: address })
   }
 
@@ -85,10 +96,11 @@ export const useCosmosTransactions = () => {
 
   const getTransactionsByHashOrHeight = async (identifier: string): Promise<IndexedTx[]> => {
     // Try to determine if it's a hash or height
-    if (/^[0-9]+$/.test(identifier)) {
+    if (/^\d+$/.test(identifier)) {
       // It's probably a block height
-      return await getTransactionsByHeight(parseInt(identifier))
-    } else {
+      return await getTransactionsByHeight(Number.parseInt(identifier))
+    }
+    else {
       // It's probably a hash
       return await searchTransactions({ hash: identifier })
     }
@@ -101,44 +113,44 @@ export const useCosmosTransactions = () => {
       gasUsed: tx.gasUsed,
       gasWanted: tx.gasWanted,
       events: tx.events,
-      messages: [] as any[],
-      transfers: [] as { recipient: string; sender: string; amount: string }[],
-      fees: [] as any[]
+      messages: [] as TransactionMessage[],
+      transfers: [] as { recipient: string, sender: string, amount: string }[],
+      fees: [] as TransactionFee[],
     }
 
     // Analyze messages from events
-    tx.events.forEach(event => {
+    tx.events.forEach((event) => {
       if (event.type === 'message') {
         const message = {
           type: '',
-          content: event.attributes
+          content: event.attributes.map(attr => ({ key: attr.key, value: attr.value })),
         }
-        
-        event.attributes.forEach(attr => {
+
+        event.attributes.forEach((attr) => {
           if (attr.key === 'action') {
             message.type = attr.value
           }
         })
-        
+
         analysis.messages.push(message)
       }
     })
 
     // Analyze transfer events
-    tx.events.forEach(event => {
+    tx.events.forEach((event) => {
       if (event.type === 'transfer') {
         const transfer = {
           recipient: '',
           sender: '',
-          amount: ''
+          amount: '',
         }
-        
-        event.attributes.forEach(attr => {
+
+        event.attributes.forEach((attr) => {
           if (attr.key === 'recipient') transfer.recipient = attr.value
           if (attr.key === 'sender') transfer.sender = attr.value
           if (attr.key === 'amount') transfer.amount = attr.value
         })
-        
+
         if (transfer.recipient && transfer.sender) {
           analysis.transfers.push(transfer)
         }
@@ -150,7 +162,7 @@ export const useCosmosTransactions = () => {
 
   const formatTransactionForDisplay = (tx: IndexedTx) => {
     const analysis = analyzeTransaction(tx)
-    
+
     return {
       hash: analysis.hash,
       height: analysis.height,
@@ -159,7 +171,7 @@ export const useCosmosTransactions = () => {
       messageCount: analysis.messages.length,
       transferCount: analysis.transfers.length,
       timestamp: 'N/A', // Timestamp not available in IndexedTx
-      fee: null // Fee information not available from IndexedTx
+      fee: null, // Fee information not available from IndexedTx
     }
   }
 
@@ -174,6 +186,6 @@ export const useCosmosTransactions = () => {
     getTransactionsByHeight,
     getTransactionsByHashOrHeight,
     analyzeTransaction,
-    formatTransactionForDisplay
+    formatTransactionForDisplay,
   }
 }

@@ -20,7 +20,7 @@ export default defineNuxtModule<ModuleOptions>({
   // Default configuration options of the Nuxt module
   defaults: {
     defaultEndpoint: 'https://cosmos-api.cosmdev.com/rpc/atom',
-    prefix: 'Cosmos'
+    prefix: 'Cosmos',
   },
   setup(options, _nuxt) {
     const resolver = createResolver(import.meta.url)
@@ -31,33 +31,33 @@ export default defineNuxtModule<ModuleOptions>({
     // Add the main components
     addComponent({
       name: `${options.prefix}BlockchainInfo`,
-      filePath: resolver.resolve('./runtime/components/CosmosBlockchainInfo.vue')
+      filePath: resolver.resolve('./runtime/components/CosmosBlockchainInfo.vue'),
     })
 
     addComponent({
       name: `${options.prefix}BasicInfo`,
-      filePath: resolver.resolve('./runtime/components/CosmosBasicInfo.vue')
+      filePath: resolver.resolve('./runtime/components/CosmosBasicInfo.vue'),
     })
 
     // Add composables as auto-imports
     addImports({
       name: 'useCosmosClient',
-      from: resolver.resolve('./runtime/composables/useCosmosClient')
+      from: resolver.resolve('./runtime/composables/useCosmosClient'),
     })
 
     addImports({
       name: 'useCosmosBasic',
-      from: resolver.resolve('./runtime/composables/useCosmosBasic')
+      from: resolver.resolve('./runtime/composables/useCosmosBasic'),
     })
 
     addImports({
       name: 'useCosmosTransactions',
-      from: resolver.resolve('./runtime/composables/useCosmosTransactions')
+      from: resolver.resolve('./runtime/composables/useCosmosTransactions'),
     })
 
     // Make default endpoint available in runtime config
     _nuxt.options.runtimeConfig.public.cosmos = {
-      defaultEndpoint: options.defaultEndpoint || 'https://cosmos-api.cosmdev.com/rpc/atom'
+      defaultEndpoint: options.defaultEndpoint || 'https://cosmos-api.cosmdev.com/rpc/atom',
     }
   },
 })

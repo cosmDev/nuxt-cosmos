@@ -2,12 +2,24 @@ import { ref, computed } from 'vue'
 import { StargateClient } from '@cosmjs/stargate'
 import type { Block } from '@cosmjs/stargate'
 
+export interface NodeInfo {
+  validators?: unknown
+  status?: unknown
+  nodeInfo?: {
+    version?: string
+    moniker?: string
+    network?: string
+    [key: string]: unknown
+  }
+  [key: string]: unknown
+}
+
 export interface CosmosBlockchainInfo {
   chainId: string
   latestBlockHeight: number
   latestBlockTime: string
   latestBlockHash: string
-  nodeInfo?: any
+  nodeInfo?: NodeInfo
 }
 
 export const useCosmosClient = () => {
@@ -20,13 +32,15 @@ export const useCosmosClient = () => {
     try {
       isLoading.value = true
       error.value = null
-      
+
       client.value = await StargateClient.connect(endpoint)
       isConnected.value = true
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : 'Connection error'
       console.error('Error during connection:', err)
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -48,18 +62,20 @@ export const useCosmosClient = () => {
       const [chainId, height, block] = await Promise.all([
         client.value.getChainId(),
         client.value.getHeight(),
-        client.value.getBlock()
+        client.value.getBlock(),
       ])
 
       // Try to retrieve node info safely
-      let nodeInfo = null
+      let nodeInfo: NodeInfo | null = null
       try {
         // Access Tendermint client via internal property
-        const tmClient = (client.value as any).tmClient || (client.value as any).cometClient
-        if (tmClient && typeof tmClient.status === 'function') {
-          nodeInfo = await tmClient.status()
+        const tmClient = (client.value as { tmClient?: unknown, cometClient?: unknown }).tmClient
+          || (client.value as { tmClient?: unknown, cometClient?: unknown }).cometClient
+        if (tmClient && typeof (tmClient as { status?: () => Promise<unknown> }).status === 'function') {
+          nodeInfo = await (tmClient as { status: () => Promise<NodeInfo> }).status()
         }
-      } catch (nodeErr) {
+      }
+      catch (nodeErr) {
         console.warn('Unable to retrieve node info:', nodeErr)
       }
 
@@ -68,9 +84,10 @@ export const useCosmosClient = () => {
         latestBlockHeight: height,
         latestBlockTime: block.header.time,
         latestBlockHash: block.id,
-        nodeInfo
+        nodeInfo: nodeInfo || undefined,
       }
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : 'Error retrieving information'
       throw err
     }
@@ -83,7 +100,8 @@ export const useCosmosClient = () => {
 
     try {
       return await client.value.getBlock(height)
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : 'Error retrieving block'
       throw err
     }
@@ -97,10 +115,12 @@ export const useCosmosClient = () => {
     try {
       if (denom) {
         return await client.value.getBalance(address, denom)
-      } else {
+      }
+      else {
         return await client.value.getAllBalances(address)
       }
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : 'Error retrieving balance'
       throw err
     }
@@ -113,7 +133,8 @@ export const useCosmosClient = () => {
 
     try {
       return await client.value.searchTx(query)
-    } catch (err) {
+    }
+    catch (err) {
       error.value = err instanceof Error ? err.message : 'Error searching transactions'
       throw err
     }
@@ -126,20 +147,22 @@ export const useCosmosClient = () => {
 
     try {
       // Try different approaches to retrieve node info
-      const tmClient = (client.value as any).tmClient || (client.value as any).cometClient
-      
+      const tmClient = (client.value as { tmClient?: unknown, cometClient?: unknown }).tmClient
+        || (client.value as { tmClient?: unknown, cometClient?: unknown }).cometClient
+
       if (tmClient) {
-        if (typeof tmClient.status === 'function') {
-          return await tmClient.status()
+        if (typeof (tmClient as { status?: () => Promise<unknown> }).status === 'function') {
+          return await (tmClient as { status: () => Promise<NodeInfo> }).status()
         }
-        if (typeof tmClient.validators === 'function') {
-          const validators = await tmClient.validators()
+        if (typeof (tmClient as { validators?: () => Promise<unknown> }).validators === 'function') {
+          const validators = await (tmClient as { validators: () => Promise<unknown> }).validators()
           return { validators }
         }
       }
-      
+
       return null
-    } catch (err) {
+    }
+    catch (err) {
       console.warn('Unable to retrieve node information:', err)
       return null
     }
@@ -156,6 +179,6 @@ export const useCosmosClient = () => {
     getBlock,
     getBalance,
     searchTx,
-    getNodeInfo
+    getNodeInfo,
   }
 }
