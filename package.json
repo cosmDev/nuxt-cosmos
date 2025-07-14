@@ -1,6 +1,6 @@
 {
   "name": "@cosmdev/nuxt-cosmos",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A Nuxt module for easily interacting with Cosmos blockchains using CosmJS",
   "repository": "https://github.com/cosmDev/nuxt-cosmos",
   "license": "MIT",

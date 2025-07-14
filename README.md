@@ -16,8 +16,9 @@ Find and replace all on all files (CMD+SHIFT+F):
 
 A Nuxt module for easily interacting with Cosmos blockchains using CosmJS.
 
-- [✨ &nbsp;Quickstart](/QUICKSTART.md)
+
 - [👀​ &nbsp;Examples](/EXAMPLES.md)
+- [✨ &nbsp;More examples](/README_COSMOS.md)
 
 <!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/nuxt-cosmos?file=playground%2Fapp.vue) -->
 <!-- - [📖 &nbsp;Documentation](https://example.com) -->

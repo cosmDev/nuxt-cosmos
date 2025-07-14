@@ -15,7 +15,7 @@ A Nuxt module to easily interact with Cosmos blockchains using CosmJS.
 ## Installation
 
 ```bash
-npm install nuxt-cosmos
+npm install @cosmdev/nuxt-cosmos
 ```
 
 ## Configuration
@@ -24,7 +24,7 @@ Add the module to your `nuxt.config.ts`:
 
 ```typescript
 export default defineNuxtConfig({
-  modules: ['nuxt-cosmos'],
+  modules: ['@cosmdev/nuxt-cosmos'],
   cosmos: {
     defaultEndpoint: 'https://cosmos-api.cosmdev.com/rpc/atom',
     prefix: 'Cosmos' // Prefix for components
