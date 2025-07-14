@@ -75,13 +75,13 @@ That's it! You can now use Nuxt Cosmos Module in your Nuxt app ✨
 
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/nuxt-cosmos/latest.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-version-href]: https://npmjs.com/package/nuxt-cosmos
+[npm-version-href]: https://www.npmjs.com/package/@cosmdev/nuxt-cosmos
 
 [npm-downloads-src]: https://img.shields.io/npm/dm/nuxt-cosmos.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-downloads-href]: https://npm.chart.dev/nuxt-cosmos
+[npm-downloads-href]: https://npm.chart.dev/@cosmdev/nuxt-cosmos
 
 [license-src]: https://img.shields.io/npm/l/nuxt-cosmos.svg?style=flat&colorA=020420&colorB=00DC82
-[license-href]: https://npmjs.com/package/nuxt-cosmos
+[license-href]: https://www.npmjs.com/package/@cosmdev/nuxt-cosmos
 
 [nuxt-src]: https://img.shields.io/badge/Nuxt-020420?logo=nuxt.js
 [nuxt-href]: https://nuxt.com
