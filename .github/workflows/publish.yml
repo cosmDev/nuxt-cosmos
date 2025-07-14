@@ -30,6 +30,9 @@ jobs:
         run: npm run lint
 
   publish:
+  permissions:
+    contents: read
+    pages: write          # <-- Add this line
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
