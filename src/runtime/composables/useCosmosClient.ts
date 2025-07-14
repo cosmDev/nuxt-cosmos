@@ -1,6 +1,5 @@
 import { ref, computed } from 'vue'
-import { StargateClient } from '@cosmjs/stargate'
-import type { Block } from '@cosmjs/stargate'
+import type { StargateClient, Block } from '@cosmjs/stargate'
 
 export interface NodeInfo {
   validators?: unknown
@@ -33,6 +32,8 @@ export const useCosmosClient = () => {
       isLoading.value = true
       error.value = null
 
+      // Dynamic import for better browser compatibility
+      const { StargateClient } = await import('@cosmjs/stargate')
       client.value = await StargateClient.connect(endpoint)
       isConnected.value = true
     }

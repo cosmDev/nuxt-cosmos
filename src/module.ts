@@ -59,5 +59,20 @@ export default defineNuxtModule<ModuleOptions>({
     _nuxt.options.runtimeConfig.public.cosmos = {
       defaultEndpoint: options.defaultEndpoint || 'https://cosmos-api.cosmdev.com/rpc/atom',
     }
+
+    // Transpile CosmJS packages for client-side compatibility
+    _nuxt.options.build = _nuxt.options.build || {}
+    _nuxt.options.build.transpile = _nuxt.options.build.transpile || []
+    _nuxt.options.build.transpile.push('@cosmjs/stargate', '@cosmjs/proto-signing')
+
+    // Add vite optimizeDeps configuration for CosmJS packages
+    _nuxt.options.vite = _nuxt.options.vite || {}
+    _nuxt.options.vite.optimizeDeps = _nuxt.options.vite.optimizeDeps || {}
+    _nuxt.options.vite.optimizeDeps.include = _nuxt.options.vite.optimizeDeps.include || []
+    _nuxt.options.vite.optimizeDeps.include.push('@cosmjs/stargate', '@cosmjs/proto-signing')
+
+    // Define Node.js polyfills for browser compatibility with CosmJS
+    _nuxt.options.vite.define = _nuxt.options.vite.define || {}
+    _nuxt.options.vite.define.global = 'globalThis'
   },
 })
