@@ -20,11 +20,11 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install from npm
-        run: npm i
-
       - name: Install dependencies
         run: npm ci
+
+      - name: Prepare Nuxt environment
+        run: npm run dev:prepare
 
       - name: Run linting
         run: npm run lint
@@ -47,11 +47,11 @@ jobs:
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install from npm
-        run: npm i
-
       - name: Install dependencies
         run: npm ci
+
+      - name: Prepare Nuxt environment
+        run: npm run dev:prepare
 
       - name: Build module
         run: npm run prepack
